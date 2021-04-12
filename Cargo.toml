@@ -1,0 +1,5 @@
+[dependencies]
+diesel = { version = "1.4.6", features = ["postgres"] }
+tokio = { version = "1", features = ["full"] }
+warp = "0.3"
+dotenv = "0.15.0"
