@@ -1,0 +1,205 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: simon.stockhause@mni.thm.de
+    name: Microservice SS21 TEAM Björn Franke, Simon Stockhause, Dennis Appel, Henrik
+      Huller
+  description: By Björn Franke, Simon Stockhause, Dennis Appel, Henrik Huller
+  title: User-Service Microservice SS21
+  version: "1.0"
+servers:
+- description: User-Service
+  url: https://localhost:13331
+tags:
+- name: user
+paths:
+  /user:
+    post:
+      description: With this endpoint it is possible to create a new user, which can
+        be used to localize a user.
+      operationId: post_user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "201":
+          content:
+            application/json:
+              examples:
+                'Successful Response: 201':
+                  value: Created user successfully
+              schema:
+                type: string
+          description: Created
+        "400":
+          content:
+            application/json:
+              examples:
+                BadRequest 400:
+                  value: Invalid body. It needs to be in json format.
+              schema:
+                type: string
+          description: Bad Request
+        "403":
+          content:
+            application/json:
+              examples:
+                'Forbidden: 403':
+                  value: You don't have the permission to access the requested resource.
+                    It is either read-protected or not readable by the server.
+              schema:
+                type: string
+          description: Forbidden
+      security:
+      - JWT: []
+      tags:
+      - user
+      x-openapi-router-controller: openapi_server.controllers.user_controller
+  /user/{userId}:
+    get:
+      description: This endpoint represents a individual user. A user is identified
+        by his id.
+      operationId: get_user_user_id
+      parameters:
+      - explode: false
+        in: path
+        name: userId
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: OK
+      summary: Get user by mac
+      tags:
+      - user
+      x-openapi-router-controller: openapi_server.controllers.user_controller
+  /users:
+    get:
+      description: This endpoint represents all user, which can be used to localize
+        a user.
+      operationId: get_users
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                    data:
+                    - id: 10
+                      name: Peter
+                    - id: 11
+                      name: Hans
+                    pagination:
+                      total: 2
+              schema:
+                $ref: '#/components/schemas/Users_200'
+          description: Return an array which contain all users
+      summary: GET all users
+      tags:
+      - user
+      x-openapi-router-controller: openapi_server.controllers.user_controller
+components:
+  responses:
+    Users_Get_200:
+      content:
+        application/json:
+          examples:
+            example-1:
+              value:
+                data:
+                - id: 10
+                  name: Peter
+                - id: 11
+                  name: Hans
+                pagination:
+                  total: 2
+          schema:
+            $ref: '#/components/schemas/Users_200'
+      description: Return an array which contain all users
+  schemas:
+    User:
+      description: An User is a Router inside a building. The AccesPoint is a request
+        receiver. The router has an unique Location. The distances between an AccessPoints
+        and a sender are used to calculate a Location. The User is identified by its
+        mac address
+      example:
+        name: name
+        id: 0
+      properties:
+        id:
+          title: id
+          type: integer
+        name:
+          title: name
+          type: string
+      required:
+      - id
+      - name
+      title: User
+      type: object
+      x-examples:
+        example:
+          id: "10"
+          name: Hans
+    Users_200_pagination:
+      example:
+        total: 0
+      properties:
+        total:
+          title: total
+          type: integer
+      required:
+      - total
+      title: users_200_pagination
+      type: object
+      x-examples:
+        example-1:
+          total: 3
+    Users_200:
+      description: represents return of GET /users
+      example:
+        pagination:
+          total: 0
+        data:
+        - name: name
+          id: 0
+        - name: name
+          id: 0
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/User'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/Users_200_pagination'
+      required:
+      - data
+      - pagination
+      title: Users_200
+      type: object
+      x-examples:
+        example-1:
+          value:
+            data:
+            - id: 10
+              name: Peter
+            - id: 11
+              name: Hans
+            pagination:
+              total: 2
+  securitySchemes:
+    JWT:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+      x-bearerInfoFunc: openapi_server.controllers.security_controller_.info_from_JWT
+
