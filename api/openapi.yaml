@@ -9,7 +9,7 @@ info:
   version: "1.0"
 servers:
 - description: User-Service
-  url: https://localhost:13331
+  url: http://localhost:13331
 tags:
 - name: user
 paths:
@@ -55,30 +55,6 @@ paths:
       - JWT: []
       tags:
       - user
-  /user/{userId}:
-    get:
-      description: This endpoint represents a individual user. A user is identified
-        by his id.
-      operationId: get_user_by_id
-      parameters:
-      - explode: false
-        in: path
-        name: userId
-        required: true
-        schema:
-          type: integer
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: OK
-      summary: Get user by id
-      tags:
-      - user
-  /users:
     get:
       description: This endpoint represents all user.
       operationId: get_users
@@ -90,16 +66,94 @@ paths:
                 example-1:
                   value:
                     data:
-                    - id: 10
-                      name: Peter
-                    - id: 11
-                      name: Hans
+                    - guid: "101010"
+                      username: Peter
+                    - guid: "101010"
+                      username: Hans
                     pagination:
                       total: 2
               schema:
                 $ref: '#/components/schemas/Users_200'
           description: Return an array which contains all users
       summary: GET all users
+      tags:
+      - user
+  /user/{userguid}:
+    get:
+      description: This endpoint represents a individual user. A user is identified
+        by his guid.
+      operationId: get_user_by_guid
+      parameters:
+      - explode: false
+        in: path
+        name: userguid
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: OK
+      summary: Get user by guid
+      tags:
+      - user
+    put:
+      description: This endpoint updates a individual user. A user is identified
+        by his guid.
+      operationId: put_user_by_guid
+      parameters:
+      - explode: false
+        in: path
+        name: userguid
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                'Successful Response: 200':
+                  value: updated user successfully
+              schema:
+                type: string
+          description: updated
+      summary: update user by guid
+      tags:
+      - user
+    delete:
+      description: This endpoint deletes a individual user. A user is identified
+        by his guid.
+      operationId: delete_user_by_guid
+      parameters:
+      - explode: false
+        in: path
+        name: userguid
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "204":
+          content:
+            application/json:
+              examples:
+                'Successful Response: 204':
+                  value: delete user successfully
+              schema:
+                type: string
+          description: delete
+      summary: delete user by guid
       tags:
       - user
 components:
@@ -111,10 +165,10 @@ components:
             example-1:
               value:
                 data:
-                - id: 10
-                  name: Peter
-                - id: 11
-                  name: Hans
+                - guid: "101010"
+                  username: Peter
+                - guid: "202020"
+                  username: Hans
                 pagination:
                   total: 2
           schema:
@@ -124,24 +178,24 @@ components:
     User:
       description: An User
       example:
-        name: name
-        id: 0
+        username: hans
+        guid: 0
       properties:
-        id:
-          title: id
-          type: integer
-        name:
-          title: name
+        guid:
+          title: guid
+          type: string
+        username:
+          title: username
           type: string
       required:
-      - id
-      - name
+      - guid
+      - username
       title: User
       type: object
       x-examples:
         example:
-          id: "10"
-          name: Hans
+          guid: "101010"
+          username: Hans
     Users_200_pagination:
       example:
         total: 0
@@ -162,10 +216,10 @@ components:
         pagination:
           total: 0
         data:
-        - name: name
-          id: 0
-        - name: name
-          id: 0
+        - username: hans
+          guid: "101010"
+        - username: peter
+          guid: "101011"
       properties:
         data:
           items:
@@ -182,10 +236,10 @@ components:
         example-1:
           value:
             data:
-            - id: 10
-              name: Peter
-            - id: 11
-              name: Hans
+            - guid: "101010"
+              username: Peter
+            - guid: "101011"
+              username: Hans
             pagination:
               total: 2
   # securitySchemes:
