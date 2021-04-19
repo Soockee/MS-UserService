@@ -1,17 +1,24 @@
-
-mod controllers;
-mod db;
+mod mongo_db;
 mod models;
+mod error;
+mod repository;
 mod routes;
 
-use warp;
+use mongo_db::DB;
+use warp::{Filter, Rejection};
+
+type Result<T> = std::result::Result<T, error::Error>;
+type WebResult<T> = std::result::Result<T, Rejection>;
+
 
 #[tokio::main]
 async fn main() {
-    let db = db::init_db();
-    let user_routes = routes::user_routes(db);
+    let db = DB::init().await.unwrap();
+    let user_routes = routes::user_routes(db).recover(error::handle_rejection);
 
     warp::serve(user_routes)
-        .run(([127, 0, 0, 1], 13331))
+        .run(([0, 0, 0, 0], 13331))
         .await;
+    
+    println!("Server is running...")
 }
