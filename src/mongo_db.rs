@@ -1,4 +1,4 @@
-use mongodb::bson::*;
+use mongodb::bson::{doc, document::Document, oid::ObjectId};
 use mongodb::{options::ClientOptions, Client, Collection};
 use futures::StreamExt;
 use crate::models::{User,UserRequest};
@@ -50,6 +50,35 @@ impl DB {
             .await
             .map_err(MongoQueryError)?;
             Ok(())
+    }
+
+    pub async fn update_user(&self, id: &str, entry: &UserRequest) -> Result<()> {
+        let oid = ObjectId::with_string(id).map_err(|_| InvalidIDError(id.to_owned()))?;
+        let query = doc! {
+            "_id": oid,
+        };
+        let doc = doc! {
+            USERNAME: entry.username.clone(),
+        };
+
+        self.get_collection()
+            .update_one(query, doc, None)
+            .await
+            .map_err(MongoQueryError)?;
+        Ok(())
+    }
+
+    pub async fn delete_user(&self, id: &str) -> Result<()> {
+        let oid = ObjectId::with_string(id).map_err(|_| InvalidIDError(id.to_owned()))?;
+        let filter = doc! {
+            "_id": oid,
+        };
+
+        self.get_collection()
+            .delete_one(filter, None)
+            .await
+            .map_err(MongoQueryError)?;
+        Ok(())
     }
 
     /**

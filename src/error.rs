@@ -12,8 +12,8 @@ pub enum Error {
     MongoQueryError(mongodb::error::Error),
     #[error("could not access field in document: {0}")]
     MongoDataError(#[from] bson::document::ValueAccessError),
-//    #[error("invalid id used: {0}")]
-//    InvalidIDError(String),
+    #[error("invalid id used: {0}")]
+    InvalidIDError(String),
 }
 
 #[derive(Serialize)]
