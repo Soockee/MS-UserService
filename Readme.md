@@ -1,13 +1,12 @@
 # User-Service
 
-## Prerequisites
-You will also need `libssl-dev` libary
+## Setup
 
-```
-cargo install cargo-edit
-cargo add mongodb
-```
+To run the server you need to start the database:
 
+``` bash
+docker run -d -p 27017:27017 --name user_db mongo
+```
 
 ## Build the project
 
@@ -21,3 +20,23 @@ cargo build
 cargo run
 ```
 
+## Showcase
+
+``` bash
+http localhost:13331/user
+
+http POST localhost:13331/user username="Mario"
+http POST localhost:13331/user username="Luigi"
+http POST localhost:13331/user username="Princess Peach"
+http POST localhost:13331/user username="Yoshi"
+
+http localhost:13331/user 
+
+http PUT localhost:13331/user/:id username="Toad"
+
+http localhost:13331/user 
+
+http DELETE localhost:13331/user/:id
+
+http localhost:13331/user
+```
