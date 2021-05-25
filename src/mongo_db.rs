@@ -19,7 +19,7 @@ pub struct DB {
 
 impl DB {
     pub async fn init() -> Result<Self> {
-        let mut client_options = ClientOptions::parse("mongodb://127.0.0.1:27017").await?;
+        let mut client_options = ClientOptions::parse("mongodb://user_db:27017").await?;
         client_options.app_name = Some("user_service".to_string());
         Ok(Self {
             client: Client::with_options(client_options)?,
