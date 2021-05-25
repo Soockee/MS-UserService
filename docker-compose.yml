@@ -4,7 +4,7 @@ version: '3.1'
 services:
 
   db:
-    image: mongodb
+    image: mongo
     #environment:
       #MONGO_INITDB_ROOT_USERNAME: rootroot
       #MONGO_INITDB_ROOT_PASSWORD: root
