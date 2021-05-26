@@ -37,6 +37,14 @@ fn delete_user(db: DB) -> impl Filter<Extract = impl warp::Reply, Error = warp::
        .and_then(repository::delete_user)
 }
 
+fn login(db: DB) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("login")
+       .and(warp::post())
+       .and(warp::body::json())
+       .and(with_db(db))
+       .and_then(repository::login)
+}
+
 // fn get_user(db:DB) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
 //     warp::path!("user" / String)
 //         .and(warp::get())
@@ -63,6 +71,7 @@ pub fn user_routes(db: DB) -> impl Filter<Extract = impl warp::Reply, Error = wa
     .or(delete_user(db.clone()))    
     .or(create_user(db.clone()))
     .or(user_list(db.clone()))
+    .or(login(db.clone()))
 
     // get_user(db.clone())
     //     .or(update_user(db.clone()))

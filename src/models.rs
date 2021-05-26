@@ -10,3 +10,8 @@ pub struct User {
 pub struct UserRequest {
     pub username: String,
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+pub struct LoginRequest {
+    pub username: String,
+}

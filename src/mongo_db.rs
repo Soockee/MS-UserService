@@ -39,7 +39,30 @@ impl DB {
         }
         Ok(result)
     }
+    pub async fn fetch_user_by_username(&self, username: String) ->Result<User> {
+        let filter = doc! {
+            USERNAME: username,
+        };
 
+        let user_doc = self
+            .get_collection()
+            .find_one(filter, None)
+            .await
+            .map_err(MongoQueryError)?;
+        let result: Result<User>;
+        match user_doc{
+            Some(v) => {
+                result = self.doc_to_user(&v);
+                result
+            },
+            None => {
+                let dummy_string = "guid".to_string();
+                let dummy_string2 = "name".to_string();
+                result = Ok(User{guid: dummy_string, username: dummy_string2});
+                result
+            }
+        }
+    }
     pub async fn create_user(&self, entry: &UserRequest) -> Result<()> {
         let doc = doc! {
             USERNAME: entry.username.clone(),
