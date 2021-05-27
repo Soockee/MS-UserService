@@ -39,7 +39,7 @@ impl DB {
         }
         Ok(result)
     }
-    pub async fn fetch_user_by_username(&self, username: String) ->Result<User> {
+    pub async fn fetch_user_by_username(&self, username: &str) ->Result<User> {
         let filter = doc! {
             USERNAME: username,
         };

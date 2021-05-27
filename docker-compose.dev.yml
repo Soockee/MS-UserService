@@ -8,14 +8,20 @@ services:
     #environment:
       #MONGO_INITDB_ROOT_USERNAME: rootroot
       #MONGO_INITDB_ROOT_PASSWORD: root
+    restart: on-failure
+    container_name: user_db
     networks:
       - microservices
   app:
     image: master.ms.depressive.life/userservice:master
+    build: .
+    restart: on-failure
+    container_name: user_app
+    environment: 
+      - AUTH_SERVICE_URL="http://auth-app:8000/"
+      - AUTH_SERVICE_LOGIN_ENDPOINT="api/v1/login"
     ports: 
       - 13331:13331
-    environment: 
-      - AUTH_SERVICE_URL="http://zuul:8765/auth-app/api/v1/login"
     labels:
       - "pt.fabiopina.mma.registry.eureka=true"
     networks:

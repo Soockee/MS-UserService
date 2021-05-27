@@ -16,6 +16,12 @@ pub enum Error {
     InvalidIDError(String),
 }
 
+#[derive(Debug)]
+pub struct LoginError;
+impl warp::reject::Reject for LoginError {}
+
+
+
 #[derive(Serialize)]
 struct ErrorResponse {
     message: String,
