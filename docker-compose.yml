@@ -15,7 +15,7 @@ services:
     ports: 
       - 13331:13331
     environment: 
-      - AUTH_SERVICE_URL="http://zuul:8765/auth-app/api/v1/login"
+      - AUTH_SERVICE_URL=http://zuul:8765/auth-app/api/v1/login
     labels:
       - "pt.fabiopina.mma.registry.eureka=true"
     networks:

@@ -18,8 +18,8 @@ services:
     restart: on-failure
     container_name: user_app
     environment: 
-      - AUTH_SERVICE_URL="http://auth-app:8000/"
-      - AUTH_SERVICE_LOGIN_ENDPOINT="api/v1/login"
+      - AUTH_SERVICE_URL=http://auth_app:8000/api/v1/login
+    #  - RUST_BACKTRACE=1
     ports: 
       - 13331:13331
     labels:
