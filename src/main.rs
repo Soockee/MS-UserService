@@ -20,40 +20,43 @@ use std::io;
 
 use rocket::tokio::task::spawn_blocking;
 
-#[get("/world")]
-fn world() -> &'static str {
+
+#[get("/login")]
+fn login() -> &'static str {
     "Hello, world!"
 }
 
-#[get("/")]
-fn index() -> &'static str {
+#[get("/list")]
+fn list_users() -> &'static str {
+    "Hello, world!"
+}
+
+#[get("/<id>")]
+fn create_user() -> &'static str {
     "Hello, index!"
 }
 
-#[get("/delay/<seconds>")]
-async fn delay(seconds: u64) -> String {
-    sleep(Duration::from_secs(seconds)).await;
-    format!("Waited for {} seconds", seconds)
+#[put("/<id>", data = "<new_user>")]
+fn update_user()-> &'static str {
+    "Hello, index!"
 }
 
-#[get("/world/<name>")]
-fn hello(name: &str) -> String {
-    format!("World name, {}!", name)
+#[post("/", data = "<new_user>")]
+fn delete_user() -> &'static str {
+    "Hello, index!"
 }
 
 use serde::Deserialize;
 
-
 #[derive(Deserialize)]
-struct Task<'r> {
-    description: &'r str,
-    complete: bool
+struct User<'r> {
+    guid: &'r str,
+    username: &'r str,
+    email: &'r str,
 }
 
 #[database("pg_user_db")]
 struct PgDatabase(diesel::PgConnection);
-
-
 
 #[get("/blocking_task")]
 async fn blocking_task() -> io::Result<Vec<u8>> {
@@ -68,9 +71,6 @@ async fn blocking_task() -> io::Result<Vec<u8>> {
 fn rocket() -> _ {
     rocket::build()
         .attach(PgDatabase::fairing())
-        .mount("/", routes![index])
-        .mount("/", routes![hello])
-        .mount("/", routes![world])
-        .mount("/", routes![blocking_task])
-        .mount("/", routes![delay])
+        .mount("/user", routes![list, create_user, update_user, delete_user])
+        .mount("/", routes![login])
 }
