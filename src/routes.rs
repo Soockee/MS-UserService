@@ -1,7 +1,7 @@
 use warp::{self, Filter};
 
 use crate::repository;
-use crate::mongo_db::DB;
+use crate::postgres_db::DB;
 
 fn with_db(db: DB) -> impl Filter<Extract = (DB,), Error = std::convert::Infallible> + Clone {
     warp::any().map(move || db.clone())
@@ -22,7 +22,7 @@ fn create_user(db: DB) -> impl Filter<Extract = impl warp::Reply, Error = warp::
         .and_then(repository::create_user)
 }
 
-fn update_user(db: DB) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+/*fn update_user(db: DB) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
      warp::path!("user" / String)
         .and(warp::put())
         .and(warp::body::json())
@@ -44,7 +44,7 @@ fn login(db: DB) -> impl Filter<Extract = impl warp::Reply, Error = warp::Reject
        .and(with_db(db))
        .and_then(repository::login)
 }
-
+*/
 // fn get_user(db:DB) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
 //     warp::path!("user" / String)
 //         .and(warp::get())
@@ -67,11 +67,8 @@ fn login(db: DB) -> impl Filter<Extract = impl warp::Reply, Error = warp::Reject
 //         .and_then(db::delete_user)
 // }
 pub fn user_routes(db: DB) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    update_user(db.clone())
-    .or(delete_user(db.clone()))    
+    user_list(db.clone())
     .or(create_user(db.clone()))
-    .or(user_list(db.clone()))
-    .or(login(db.clone()))
 
     // get_user(db.clone())
     //     .or(update_user(db.clone()))

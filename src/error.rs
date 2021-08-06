@@ -1,4 +1,3 @@
-use mongodb::bson;
 use serde::Serialize;
 use std::convert::Infallible;
 use thiserror::Error;
