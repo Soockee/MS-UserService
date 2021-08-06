@@ -1,6 +1,8 @@
-use rocket_sync_db_pools::diesel;
-use rocket_sync_db_pools::diesel::connection::SimpleConnection;
 use std::fs;
+use crate::models::CommInterface;
+use r2d2_postgres::PostgresConnectionManager;
+use r2d2_postgres::r2d2::{Pool, PooledConnection};
+use r2d2_postgres::postgres::NoTls;
 
 pub struct DatabaseUpdater {
 
@@ -8,24 +10,28 @@ pub struct DatabaseUpdater {
 
 impl DatabaseUpdater {
 
-    fn update(dbConnection: diesel::PgConnection){
-
-        dbConnection.build_transaction()
-            .read_only()
-            .run::<_,diesel::result::Error,_>(
-                || {
-                    let read_attempt = meta_info.select(version)
-                }
-            )?;
+    pub(crate) fn update(connection: &mut PooledConnection<PostgresConnectionManager<NoTls>>){
+        let current_version =DatabaseUpdater::check_current_version(connection);
     }
 
-    fn find_next_script(db_connection: diesel::PgConnection){
+    fn check_current_version(connection: &mut PooledConnection<PostgresConnectionManager<NoTls>>) -> i32 {
+        let query = connection.prepare("SELECT db_version FROM meta_info");
+
+        let current_version = connection.query(&query, &[])
+            .iter()
+            .map(|row| {
+                row.get(0).unwrap()
+            });
+        current_version[0]
+    }
+
+    fn find_next_script(connection: &mut PooledConnection<PostgresConnectionManager<NoTls>>){
         println!("In file {}", filename);
 
         let index:i8 = 0;
 
         while let contents = fs::read_to_string(format!("db_update_{}.sql", index)).unwrap() {
-            db_connection.batch_execute(&contents);
+            connection.batch_execute(&contents);
         }
 
         let contents = fs::read_to_string(filename)

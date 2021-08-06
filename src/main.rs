@@ -18,7 +18,7 @@ mod models;
 #[macro_use] extern crate rocket;
 
 use rocket::tokio::time::{sleep, Duration};
-
+use rocket::State;
 use std::io;
 
 use r2d2::{Pool, PooledConnection};
@@ -26,37 +26,34 @@ use r2d2_postgres::PostgresConnectionManager;
 
 use rocket::tokio::task::spawn_blocking;
 
-#[database("pg_user_db")]
-struct PgDatabase(r2d2_postgres::PgConnection);
-
 #[get("/login")]
-fn login() -> &'static str {
+fn login(state: State<CommInterface>) -> &'static str {
 
 }
 
 #[get("/list")]
-fn list_users() -> &'static str {
+fn list_users(state: State<CommInterface>) -> &'static str {
     "Hello, world!"
 }
 
 #[get("/<id>")]
-fn get_user(conn: PgDatabase, id: usize) -> &'static str {
-    conn.prepare_query()
+fn get_user(state: State<CommInterface>, id: usize) -> &'static str {
+
 }
 
 
 #[post("/<id>", data = "<new_user>")]
-fn create_user()-> &'static str {
+fn create_user(state: State<CommInterface>)-> &'static str {
     "Hello, index!"
 }
 
 #[put("/<id>", data = "<new_user>")]
-fn update_user()-> &'static str {
+fn update_user(state: State<CommInterface>)-> &'static str {
     "Hello, index!"
 }
 
 #[delte("/", data = "<id>")]
-fn delete_user() -> &'static str {
+fn delete_user(state: State<CommInterface>) -> &'static str {
     "Hello, index!"
 }
 
@@ -82,6 +79,8 @@ fn rocket() -> _ {
     let rabbit = Connection::insecure_open(&url)?;
 
     let comm_interface = CommInterface{ postgres, rabbit };
+
+    database_update::DatabaseUpdater::update(&mut comm_interface.postgres.get().unwrap());
 
     rocket::build()
         .attach(PgDatabase::fairing())
