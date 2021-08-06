@@ -5,13 +5,6 @@ use r2d2_postgres::postgres::NoTls;
 use amiquip::Connection;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
-pub struct User {
-    pub id: String,
-    pub guid: String,
-    pub username: String,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct UserRequest {
     pub guid: String,
     pub username: String,
@@ -26,4 +19,11 @@ pub struct LoginRequest {
 pub struct CommInterface {
     pub postgres: Pool<PostgresConnectionManager<NoTls>>,
     pub rabbit: Connection
+}
+
+#[derive(Deserialize)]
+pub struct User<'r> {
+    guid: &'r str,
+    username: &'r str,
+    email: &'r str,
 }

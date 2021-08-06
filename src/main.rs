@@ -26,6 +26,12 @@ use r2d2_postgres::PostgresConnectionManager;
 
 use rocket::tokio::task::spawn_blocking;
 
+use serde::Deserialize;
+use crate::models::CommInterface;
+use r2d2_postgres::postgres::NoTls;
+use amiquip::Connection;
+
+
 #[get("/login")]
 fn login(state: State<CommInterface>) -> &'static str {
 
@@ -55,18 +61,6 @@ fn update_user(state: State<CommInterface>)-> &'static str {
 #[delte("/", data = "<id>")]
 fn delete_user(state: State<CommInterface>) -> &'static str {
     "Hello, index!"
-}
-
-use serde::Deserialize;
-use crate::models::CommInterface;
-use r2d2_postgres::postgres::NoTls;
-use amiquip::Connection;
-
-#[derive(Deserialize)]
-struct User<'r> {
-    guid: &'r str,
-    username: &'r str,
-    email: &'r str,
 }
 
 #[launch]
