@@ -1,0 +1,28 @@
+image: docker:19.03.12
+services:
+  - docker:19.03.12-dind
+
+
+stages:
+  - build
+
+
+mvn-docker-build-push:
+  image: maven:3.8.1-openjdk-17-slim
+  tags:
+    - microservices
+  stage: build
+  script:
+    - >
+      mvn
+      -Ddocker.nocache=true
+      docker:build
+
+    - >
+      mvn
+      -Ddocker.username=${CI_REGISTRY_USER}
+      -Ddocker.password=${CI_REGISTRY_PASSWORD}
+      -Ddocker.registry=${CI_REGISTRY}
+      docker:push
+  only:
+    - master
