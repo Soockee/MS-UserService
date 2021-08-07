@@ -76,4 +76,8 @@ public class AppUserService {
         user.setEmail(email);
         return this.userRepository.save(user);
     }
+
+    public Optional<AppUser> getAppUserByEmail(String email) {
+        return this.userRepository.getByEmail(email);
+    }
 }

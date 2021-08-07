@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 import thm.mic.ser.user_service.config.AuthenticationConfigConstants;
+import thm.mic.ser.user_service.dto.AppUser;
 
 @RequiredArgsConstructor
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -30,8 +31,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
-            User creds = new ObjectMapper()
-                    .readValue(request.getInputStream(), User.class);
+            AppUser creds = new ObjectMapper()
+                    .readValue(request.getInputStream(), AppUser.class);
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -47,8 +48,20 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication auth) throws IOException, ServletException {
         String token = JWT.create()
                 .withSubject(((User) auth.getPrincipal()).getUsername())
+                .withClaim("role", auth.getAuthorities().iterator().next().getAuthority())
                 .withExpiresAt(new Date(System.currentTimeMillis() + AuthenticationConfigConstants.EXPIRATION_TIME))
                 .sign(Algorithm.HMAC512(AuthenticationConfigConstants.SECRET.getBytes()));
+
+        //START - SENDING JWT AS A BODY
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(
+                "{\"" + AuthenticationConfigConstants.HEADER_STRING + "\":\"" + AuthenticationConfigConstants.TOKEN_PREFIX + token + "\"}"
+        );
+        //END - SENDING JWT AS A BODY
+
+        //START - SENDING JWT AS A HEADER
         response.addHeader(AuthenticationConfigConstants.HEADER_STRING, AuthenticationConfigConstants.TOKEN_PREFIX + token);
+        //END - SENDING JWT AS A HEADER
     }
 }
