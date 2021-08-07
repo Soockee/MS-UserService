@@ -55,7 +55,7 @@ public class AppUserController {
         return ResponseEntity.ok(this.userService.updateAppUser(user));
     }
 
-    @PutMapping("{uuid}")
+    @PutMapping("/elevate/{uuid}")
     ResponseEntity<AppUser> setUserRole(@PathVariable String uuid, @RequestParam String role){
 
         AppUser user = this.userService.getAppUserByUuid(uuid);

@@ -1,5 +1,6 @@
 package thm.mic.ser.user_service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.Data;
 
@@ -27,6 +28,7 @@ public class AppUser {
     String email;
 
     @Column
+    @JsonIgnore
     private String password;
 
     @Column
