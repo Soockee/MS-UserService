@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class LoginCredentials
 {
     @NotNull()
-    private String email;
+    private String username;
 
     @NotNull()
     private String password;

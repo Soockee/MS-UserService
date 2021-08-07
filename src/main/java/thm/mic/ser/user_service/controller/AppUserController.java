@@ -43,6 +43,7 @@ public class AppUserController {
         AppUser user = userService.registerUser(registrationRequest);
         return ResponseEntity.ok().build();
     }
+
     @PutMapping("{uuid}")
     ResponseEntity<AppUser> updateAppUser(@PathVariable String uuid,
                                     @RequestParam String username,
@@ -51,6 +52,14 @@ public class AppUserController {
         AppUser user = this.userService.getAppUserByUuid(uuid);
         user.setUsername(username);
         user.setEmail(email);
+        return ResponseEntity.ok(this.userService.updateAppUser(user));
+    }
+
+    @PutMapping("{uuid}")
+    ResponseEntity<AppUser> setUserRole(@PathVariable String uuid, @RequestParam String role){
+
+        AppUser user = this.userService.getAppUserByUuid(uuid);
+        user.setRole(role);
         return ResponseEntity.ok(this.userService.updateAppUser(user));
     }
 

@@ -30,5 +30,6 @@ public class AppUser {
     private String password;
 
     @Column
+    @NotNull
     private String role;
 }

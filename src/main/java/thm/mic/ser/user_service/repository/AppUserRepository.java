@@ -18,5 +18,8 @@ public interface AppUserRepository extends JpaRepository<AppUser, Integer> {
     Optional<AppUser> getByUserGUID(String uuid);
 
     @Query(value = "SELECT * FROM app_user WHERE email = ?1", nativeQuery = true)
-    Optional<AppUser> getByEmail(String uuid);
+    Optional<AppUser> getByEmail(String email);
+
+    @Query(value = "SELECT * FROM app_user WHERE username = ?1", nativeQuery = true)
+    Optional<AppUser> getByUsername(String username);
 }

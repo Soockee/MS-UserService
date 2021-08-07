@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import thm.mic.ser.user_service.config.AuthenticationConfigConstants;
 import thm.mic.ser.user_service.dto.AppUser;
+import thm.mic.ser.user_service.dto.LoginCredentials;
 
 @RequiredArgsConstructor
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -31,8 +32,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
-            AppUser creds = new ObjectMapper()
-                    .readValue(request.getInputStream(), AppUser.class);
+            LoginCredentials creds = new ObjectMapper()
+                    .readValue(request.getInputStream(), LoginCredentials.class);
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(

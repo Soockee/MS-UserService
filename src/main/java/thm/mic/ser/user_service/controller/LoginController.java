@@ -24,7 +24,7 @@ public class LoginController {
     @PostMapping("/login")
     ResponseEntity<Passport> login(@RequestBody LoginCredentials credentials) {
 
-        Optional<AppUser> user = this.userService.getAppUserByEmail(credentials.getEmail());
+        Optional<AppUser> user = this.userService.getAppUserByEmail(credentials.getUsername());
 
         if(!user.isPresent()) {
             throw new RuntimeException("No user was found for this Email address");

@@ -66,6 +66,7 @@ public class AppUserService {
         user.setUsername(registrationRequest.getUsername());
         user.setEmail(registrationRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        user.setRole("USER");
 
         return this.userRepository.save(user);
     }
@@ -79,5 +80,9 @@ public class AppUserService {
 
     public Optional<AppUser> getAppUserByEmail(String email) {
         return this.userRepository.getByEmail(email);
+    }
+
+    public Optional<AppUser> getAppUserByUsername(String username) {
+        return this.userRepository.getByUsername(username);
     }
 }

@@ -20,13 +20,14 @@ public class AuthenticationDetailService implements UserDetailsService {
 
     private final AppUserService userService;
 
-    @Override public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<AppUser> optionalAppUser = userService.getAppUserByEmail(email);
+    @Override public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<AppUser> optionalAppUser = userService.getAppUserByUsername(username);
         if (!optionalAppUser.isPresent()) {
-            throw new UsernameNotFoundException(email);
+            throw new UsernameNotFoundException(username);
         }
 
         AppUser appUser = optionalAppUser.get();
+
         return new org.springframework.security.core.userdetails.User(appUser.getUsername(),
                 appUser.getPassword(), getAuthorities(appUser.getRole()));
     }
