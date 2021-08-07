@@ -1,5 +1,5 @@
 use std::fs;
-use crate::models::CommInterface;
+use crate::models::MessageQueue;
 use r2d2_postgres::PostgresConnectionManager;
 use r2d2_postgres::r2d2::{Pool, PooledConnection};
 use r2d2_postgres::postgres::NoTls;
@@ -19,24 +19,23 @@ impl DatabaseUpdater {
 
         let current_version = connection.query(&query, &[])
             .iter()
-            .map(|row| {
+            .fold(None, |row| {
                 row.get(0).unwrap()
             });
         current_version[0]
     }
 
+    fn update_db_version(connection: &mut PooledConnection<PostgresConnectionManager<NoTls>>, next_version: i8) {
+        let query = connection.prepare("UPDATE meta_info SET db_version = $1");
+        connection.query(&query, &[&next_version]);
+    }
+
     fn find_next_script(connection: &mut PooledConnection<PostgresConnectionManager<NoTls>>){
-        println!("In file {}", filename);
 
         let index:i8 = 0;
 
         while let contents = fs::read_to_string(format!("db_update_{}.sql", index)).unwrap() {
             connection.batch_execute(&contents);
         }
-
-        let contents = fs::read_to_string(filename)
-            .expect("Something went wrong reading the file");
-
-        println!("With text:\n{}", contents);
     }
 }

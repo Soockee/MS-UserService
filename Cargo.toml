@@ -12,12 +12,11 @@ postgres = "0.17.5"
 rocket = "0.5.0-rc.1"
 tokio = { version = "0.2.0"}
 serde = "1.0.127"
-warp = "0.2.0"
 thiserror = "1.0"
 futures = "0.3.4"
 postgres-types = "0.2.1"
-r2d2 = "0.8.9"
-r2d2_postgres = "0.18.0"
+diesel = { version = "1.4.0", features = ["postgres", "uuidv07"] }
+uuid = { version = "0.8.2", features = ["serde", "v4"] }
 
 [dependencies.rocket_sync_db_pools]
 version = "0.1.0-rc.1"

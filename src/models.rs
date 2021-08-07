@@ -1,8 +1,6 @@
 use serde::{Deserialize, Serialize};
-use r2d2_postgres::r2d2::Pool;
-use r2d2_postgres::PostgresConnectionManager;
-use r2d2_postgres::postgres::NoTls;
 use amiquip::Connection;
+use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct UserRequest {
@@ -16,14 +14,13 @@ pub struct LoginRequest {
 }
 
 #[derive(Debug)]
-pub struct CommInterface {
-    pub postgres: Pool<PostgresConnectionManager<NoTls>>,
+pub struct MessageQueue {
     pub rabbit: Connection
 }
 
-#[derive(Deserialize)]
-pub struct User<'r> {
-    guid: &'r str,
-    username: &'r str,
-    email: &'r str,
+#[derive(Queryable)]
+pub struct User {
+    guid: Uuid,
+    username: String,
+    email: String,
 }
