@@ -81,6 +81,41 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>**/UserServiceApplicationTests.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<!--	CONTINUES DELIVERY		-->
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.36.1</version>
+				<configuration>
+					<verbose>true</verbose>
+					<images>
+						<image>
+							<name>sockee/microservices-user</name>
+							<build>
+								<contextDir>${project.basedir}</contextDir>
+								<tags>
+									<tag>latest</tag>
+									<tag>${project.version}</tag>
+								</tags>
+							</build>
+							<run>
+								<ports>
+									<port>13332:13332</port>
+								</ports>
+							</run>
+						</image>
+					</images>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
