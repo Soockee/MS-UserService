@@ -14,17 +14,13 @@ import java.util.Optional;
 @Service
 public class AppUserService {
     private final AppUserRepository userRepository;
-    private final RabbitTemplate rabbitTemplate;
+    private final MessagingService messagingService;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    static final String topicExchangeName = "spring-boot-exchange";
-
-    static final String queueName = "spring-boot";
-
     @Autowired
-    public AppUserService(AppUserRepository userRepository, RabbitTemplate rabbitTemplate, BCryptPasswordEncoder passwordEncoder) {
+    public AppUserService(AppUserRepository userRepository, MessagingService messagingService, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.rabbitTemplate = rabbitTemplate;
+        this.messagingService = messagingService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -50,15 +46,14 @@ public class AppUserService {
         if(user.isPresent()) {
             this.userRepository.delete(user.get());
 
-            informQueueSubscriber();
+            informQueueSubscriber(uuid);
             return true;
         }
         return false;
     }
 
-    private void informQueueSubscriber() {
-        String message = "Deleted";
-        this.rabbitTemplate.convertAndSend(topicExchangeName, message);
+    private void informQueueSubscriber(String uuid) {
+        this.messagingService.sendMessage(uuid);
     }
 
     public AppUser registerUser(UserRegistrationRequest registrationRequest) {

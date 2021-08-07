@@ -19,7 +19,7 @@ public class AppUser {
     @NotNull
     String guid = UUID.randomUUID().toString();
 
-    @Column
+    @Column(unique = true)
     @NotNull
     String username;
 
