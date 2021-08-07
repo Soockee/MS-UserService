@@ -1,2 +1,0 @@
-[global.databases.pg_user_db]
-url = "postgresql://postgres:free@localhost:5432/pg_user_db"
