@@ -40,10 +40,12 @@ public class MessagingService {
         this.appUserRepository = appUserRepository;
     }
 
+/*
     @RabbitListener(queues = "project.user.add")
     public boolean userExitsRequest(UUID uuid){
         return this.appUserRepository.getByUserGUID(uuid.toString()).isPresent();
     }
+*/
 
     public void sendCreationMessage(String uuid, String name){
         UserCreatedMessage ucm = new UserCreatedMessage();
