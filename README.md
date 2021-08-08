@@ -55,3 +55,11 @@ User Deleted
   "uuid": "71bfdfa9-6be2-4e9e-8534-74aed69f39f9"
 }
 ```
+
+User Creation
+```json
+{
+  "uuid": "71bfdfa9-6be2-4e9e-8534-74aed69f39f9",
+  "name": "Hoppel Hase"
+}
+```
