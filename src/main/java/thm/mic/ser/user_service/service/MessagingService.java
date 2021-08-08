@@ -40,7 +40,7 @@ public class MessagingService {
         this.appUserRepository = appUserRepository;
     }
 
-    @RabbitListener(queues = "user.validation")
+    @RabbitListener(queues = "project.user.add")
     public boolean userExitsRequest(UUID uuid){
         return this.appUserRepository.getByUserGUID(uuid.toString()).isPresent();
     }
