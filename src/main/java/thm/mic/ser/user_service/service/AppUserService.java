@@ -1,6 +1,5 @@
 package thm.mic.ser.user_service.service;
 
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import thm.mic.ser.user_service.dto.AppUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,14 +45,14 @@ public class AppUserService {
         if(user.isPresent()) {
             this.userRepository.delete(user.get());
 
-            informQueueSubscriber(uuid);
+            informDeletionQueueSubscriber(uuid);
             return true;
         }
         return false;
     }
 
-    private void informQueueSubscriber(String uuid) {
-        this.messagingService.sendMessage(uuid);
+    private void informDeletionQueueSubscriber(String uuid) {
+        this.messagingService.sendDeletionMessage(uuid);
     }
 
     public AppUser registerUser(UserRegistrationRequest registrationRequest) {
@@ -63,13 +62,21 @@ public class AppUserService {
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         user.setRole("USER");
 
+        informUserCreationQueueSubscriber(user.getGuid(), user.getUsername());
+
         return this.userRepository.save(user);
+    }
+
+    private void informUserCreationQueueSubscriber(String guid, String username) {
+        this.messagingService.sendCreationMessage(guid, username);
     }
 
     public AppUser createUser(String username, String email) {
         AppUser user = new AppUser();
         user.setUsername(username);
         user.setEmail(email);
+        informUserCreationQueueSubscriber(user.getGuid(), user.getUsername());
+
         return this.userRepository.save(user);
     }
 

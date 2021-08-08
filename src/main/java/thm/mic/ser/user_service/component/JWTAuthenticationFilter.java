@@ -52,7 +52,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withSubject(((User) auth.getPrincipal()).getUsername())
                 .withClaim("role", auth.getAuthorities().iterator().next().getAuthority())
                 .withExpiresAt(new Date(System.currentTimeMillis() + AuthenticationConfigConstants.EXPIRATION_TIME))
-                .sign(Algorithm.HMAC512(AuthenticationConfigConstants.SECRET.getBytes()));
+                .sign(Algorithm.HMAC256(AuthenticationConfigConstants.SECRET.getBytes()));
 
         //START - SENDING JWT AS A BODY
         response.setContentType("application/json");

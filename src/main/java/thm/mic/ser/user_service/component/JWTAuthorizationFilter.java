@@ -46,7 +46,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         String token = request.getHeader(AuthenticationConfigConstants.HEADER_STRING);
         if (token != null) {
             // parse the token.
-            DecodedJWT verify = JWT.require(Algorithm.HMAC512(AuthenticationConfigConstants.SECRET.getBytes()))
+            DecodedJWT verify = JWT.require(Algorithm.HMAC256(AuthenticationConfigConstants.SECRET.getBytes()))
                     .build()
                     .verify(token.replace(AuthenticationConfigConstants.TOKEN_PREFIX, ""));
 

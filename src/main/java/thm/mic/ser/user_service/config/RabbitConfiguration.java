@@ -1,6 +1,7 @@
 package thm.mic.ser.user_service.config;
 
 import org.springframework.amqp.core.*;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,21 +9,39 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfiguration {
 
-    @Value("${rabbit.exchange}")
+    @Value("${rabbit.exchange.direct}")
     static final String directExchange = "direct-exchange";
 
+    @Value("${rabbit.exchange.news}")
+    static final String newsExchange = "news";
+
     @Bean
-    Binding userDeletedBinding(Queue queue, DirectExchange exchange) {
+    Binding userCreatedBinding(@Qualifier("userCreatedUser") Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with("news.user.create");
+    }
+
+    @Bean
+    Binding userDeletedBinding(@Qualifier("userDeletedQueue") Queue queue, DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with("project.user.deleted");
     }
 
     @Bean
     Queue userDeletedQueue() {
-        return new Queue("userDeletedQueue", false);
+        return new Queue("userDeletedQueue");
     }
 
     @Bean
-    public DirectExchange exchange() {
+    Queue userCreatedUser() {
+        return new Queue("userCreated");
+    }
+
+    @Bean
+    public TopicExchange topicExchange() {
+        return new TopicExchange(newsExchange, false, false);
+    }
+
+    @Bean
+    public DirectExchange directExchange() {
         return new DirectExchange(directExchange, false, false);
     }
 }
