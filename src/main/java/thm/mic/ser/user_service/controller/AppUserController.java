@@ -41,7 +41,7 @@ public class AppUserController {
     @PostMapping("/register")
     public ResponseEntity<AppUser> createUser (@RequestBody UserRegistrationRequest registrationRequest) {
         AppUser user = userService.registerUser(registrationRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(user);
     }
 
     @PutMapping("{uuid}")
