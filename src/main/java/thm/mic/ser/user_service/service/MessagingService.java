@@ -7,6 +7,7 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,16 +25,23 @@ public class MessagingService {
     private final Queue userCreationQueue;
     private final Queue userDeletionQueue;
     private final ObjectMapper objectMapper;
+    private final AppUserService appUserService;
 
     @Autowired
     public MessagingService(RabbitTemplate rabbitTemplate,
                             @Qualifier("userCreatedUser") Queue userCreationQueue,
                             @Qualifier("userDeletedQueue") Queue userDeletionQueue,
-                            ObjectMapper objectMapper) {
+                            ObjectMapper objectMapper, AppUserService appUserService) {
         this.rabbitTemplate = rabbitTemplate;
         this.userCreationQueue = userCreationQueue;
         this.userDeletionQueue = userDeletionQueue;
         this.objectMapper = objectMapper;
+        this.appUserService = appUserService;
+    }
+
+    @RabbitListener(queues = "user.validation")
+    public boolean userExitsRequest(UUID uuid){
+        return this.appUserService.userExits(uuid.toString());
     }
 
     public void sendCreationMessage(String uuid, String name){

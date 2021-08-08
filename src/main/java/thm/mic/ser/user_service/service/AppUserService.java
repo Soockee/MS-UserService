@@ -27,6 +27,10 @@ public class AppUserService {
         return this.userRepository.findAll();
     }
 
+    public boolean userExits(String uuid){
+        return this.userRepository.getByUserGUID(uuid).isPresent();
+    }
+
     public AppUser getAppUserByUuid(String uuid){
         Optional<AppUser> user = this.userRepository.getByUserGUID(uuid);
         if (user.isPresent()) {
