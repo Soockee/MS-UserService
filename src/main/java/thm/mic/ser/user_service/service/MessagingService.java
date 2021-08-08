@@ -25,6 +25,7 @@ public class MessagingService {
     private final RabbitTemplate rabbitTemplate;
     private final Queue userCreationQueue;
     private final Queue userDeletionQueue;
+    private final Queue userAddQueue;
     private final ObjectMapper objectMapper;
     private final AppUserRepository appUserRepository;
 
@@ -32,20 +33,21 @@ public class MessagingService {
     public MessagingService(RabbitTemplate rabbitTemplate,
                             @Qualifier("userCreatedUser") Queue userCreationQueue,
                             @Qualifier("userDeletedQueue") Queue userDeletionQueue,
-                            ObjectMapper objectMapper, AppUserRepository appUserRepository) {
+                            @Qualifier("userAddQueue") Queue userAddQueue,
+                            ObjectMapper objectMapper,
+                            AppUserRepository appUserRepository) {
         this.rabbitTemplate = rabbitTemplate;
         this.userCreationQueue = userCreationQueue;
         this.userDeletionQueue = userDeletionQueue;
+        this.userAddQueue = userAddQueue;
         this.objectMapper = objectMapper;
         this.appUserRepository = appUserRepository;
     }
 
-/*
-    @RabbitListener(queues = "project.user.add")
+    @RabbitListener(queues = "#{userAddQueue.getName()}")
     public boolean userExitsRequest(UUID uuid){
         return this.appUserRepository.getByUserGUID(uuid.toString()).isPresent();
     }
-*/
 
     public void sendCreationMessage(String uuid, String name){
         UserCreatedMessage ucm = new UserCreatedMessage();

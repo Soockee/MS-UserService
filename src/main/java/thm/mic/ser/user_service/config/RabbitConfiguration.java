@@ -26,7 +26,7 @@ public class RabbitConfiguration {
     }
 
     @Bean
-    Binding userAddQueue(@Qualifier("userAddQueue") Queue queue, DirectExchange exchange) {
+    Binding userAddBinding(@Qualifier("userAddQueue") Queue queue, DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with("project.user.add");
     }
 
