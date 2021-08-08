@@ -1,12 +1,6 @@
 package thm.mic.ser.user_service.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.amqp.core.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,10 +9,10 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConfiguration {
 
     @Value("${rabbit.exchange}")
-    static final String topicExchangeName = "direct-exchange";
+    static final String directExchange = "direct-exchange";
 
     @Bean
-    Binding userDeletedBinding(Queue queue, TopicExchange exchange) {
+    Binding userDeletedBinding(Queue queue, DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with("project.user.deleted");
     }
 
@@ -28,7 +22,7 @@ public class RabbitConfiguration {
     }
 
     @Bean
-    public TopicExchange exchange() {
-        return new TopicExchange(topicExchangeName);
+    public DirectExchange exchange() {
+        return new DirectExchange(directExchange, false, false);
     }
 }
