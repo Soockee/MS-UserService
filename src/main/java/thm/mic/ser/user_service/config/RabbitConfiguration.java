@@ -37,11 +37,11 @@ public class RabbitConfiguration {
 
     @Bean
     public TopicExchange topicExchange() {
-        return new TopicExchange(newsExchange, false, false);
+        return new TopicExchange(newsExchange);
     }
 
     @Bean
     public DirectExchange directExchange() {
-        return new DirectExchange(directExchange, false, false);
+        return new DirectExchange(directExchange);
     }
 }
