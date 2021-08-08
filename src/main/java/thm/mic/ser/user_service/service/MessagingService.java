@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import thm.mic.ser.user_service.dto.UserCreatedMessage;
 import thm.mic.ser.user_service.dto.UserDeletedMessage;
+import thm.mic.ser.user_service.repository.AppUserRepository;
 
 import java.util.UUID;
 
@@ -25,23 +26,23 @@ public class MessagingService {
     private final Queue userCreationQueue;
     private final Queue userDeletionQueue;
     private final ObjectMapper objectMapper;
-    private final AppUserService appUserService;
+    private final AppUserRepository appUserRepository;
 
     @Autowired
     public MessagingService(RabbitTemplate rabbitTemplate,
                             @Qualifier("userCreatedUser") Queue userCreationQueue,
                             @Qualifier("userDeletedQueue") Queue userDeletionQueue,
-                            ObjectMapper objectMapper, AppUserService appUserService) {
+                            ObjectMapper objectMapper, AppUserRepository appUserRepository) {
         this.rabbitTemplate = rabbitTemplate;
         this.userCreationQueue = userCreationQueue;
         this.userDeletionQueue = userDeletionQueue;
         this.objectMapper = objectMapper;
-        this.appUserService = appUserService;
+        this.appUserRepository = appUserRepository;
     }
 
     @RabbitListener(queues = "user.validation")
     public boolean userExitsRequest(UUID uuid){
-        return this.appUserService.userExits(uuid.toString());
+        return this.appUserRepository.getByUserGUID(uuid.toString()).isPresent();
     }
 
     public void sendCreationMessage(String uuid, String name){
