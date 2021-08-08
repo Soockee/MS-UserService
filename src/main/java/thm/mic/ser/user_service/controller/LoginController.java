@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import thm.mic.ser.user_service.dto.AppUser;
 import thm.mic.ser.user_service.dto.LoginCredentials;
 import thm.mic.ser.user_service.dto.Passport;
