@@ -33,6 +33,10 @@ Authentication: <JWT Token>
     * Required Body ```{ "role":"<role>" }```
     * Returns User
 
+### Authentication flow
+
+!["Authentication Flow"](./img/user-service-secret.jpg)
+
 ## Messaging
 
 All Queues are reachable by the exchange `direct-exchange`
@@ -43,7 +47,6 @@ ProjectService queues:
 
 Routing-Keys:
 * user.deleted
-
 
 !["messaging architecture"](./img/rabbit.png)
 
